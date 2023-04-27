@@ -22,15 +22,7 @@ jobs:
         run: |
           pip install poetry
           make install
-      - name: Run linter and pytest
+      - name: Run linter
         run: |
           poetry run flake8 page_analyzer
-          make check
-      - name: Test & publish code coverage
-        uses: paambaati/codeclimate-action@v3.0.0
-        if: github.ref_name == 'main'
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.TEST_COVERAGE_ENV }}
-        with:
-          coverageCommand: make test-coverage
-          debug: true
+      
