@@ -46,14 +46,15 @@ def handle_urls():
             flash('URL обязателен')
             return redirect(url_for('main'), code=302)
         if validators.url(new_url):
-            curr_url = f'{urlparse(new_url).scheme} \
-            ://{urlparse(new_url).netloc}'
+            url_scheme = urlparse(new_url).scheme
+            url_netloc = urlparse(new_url).netloc
+            curr_url = f'{url_scheme}://{url_netloc}'
             with conn.cursor() as curs:
                 try:
                     curs.execute("""SELECT id FROM urls WHERE name=%s""",
                                  (curr_url, ))
                     url_id = curs.fetchone()[0]
-                    flash('Страница уже существует')
+                    flash('Страница уже существует', 'repeat')
                     return redirect(url_for('url_page', id=url_id), code=302)
                 except Exception:
                     curs.execute(
@@ -67,7 +68,7 @@ def handle_urls():
                 url_id = curs.fetchone()[0]
             curs.close()
             conn.close()
-            flash('Страница успешно добавлена')
+            flash('Страница успешно добавлена', 'success')
             return redirect(url_for('url_page', id=url_id), code=302)
         else:
             flash('Некорректный URL')
