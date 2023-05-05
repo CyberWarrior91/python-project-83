@@ -35,7 +35,6 @@ def validation(url):
     return errors
 
 
-
 @app.route('/urls', methods=['GET', 'POST'])
 def handle_urls():
     DATABASE_URL = os.getenv('DATABASE_URL')
@@ -89,17 +88,6 @@ def handle_urls():
         conn.close()
         return render_template('all_urls.html', urls=urls_base)
 
-"""SELECT urls.id, urls.name, url_checks.created_at
-FROM urls
-JOIN (
-  SELECT url_id, MAX(created_at) as created_at
-  FROM url_checks
-  GROUP BY url_id
-) url_checks ON urls.id = url_checks.url_id"""
-
-"""SELECT urls.id, urls.name, url_checks.created_at 
-            FROM urls
-            LEFT JOIN url_checks ON urls.id = url_checks.url_id"""
 
 @app.get('/urls/<id>')
 def url_page(id):
@@ -113,12 +101,14 @@ def url_page(id):
         url = curs.fetchone()
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
         curs.execute(
-            """SELECT id, created_at FROM url_checks 
+            """SELECT id, created_at FROM url_checks
             WHERE url_id=%s""", (id, ))
         check_info = curs.fetchall()
     curs.close()
     conn.close()
-    return render_template('single_url.html', check_info=check_info, messages=messages, url=url)
+    return render_template(
+        'single_url.html',
+        check_info=check_info, messages=messages, url=url)
 
 
 @app.post('/urls/<id>/checks')
@@ -134,4 +124,3 @@ def make_check(id):
     conn.close()
     flash('Страница успешно проверена', 'success')
     return redirect(url_for('url_page', id=id), code=302)
-            
