@@ -35,6 +35,7 @@ def validation(url):
     return errors
 
 
+
 @app.route('/urls', methods=['GET', 'POST'])
 def handle_urls():
     DATABASE_URL = os.getenv('DATABASE_URL')
@@ -75,12 +76,30 @@ def handle_urls():
             return redirect(url_for('main'), code=302)
     if request.method == 'GET':
         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
-            curs.execute("""SELECT id, name, created_at FROM urls""")
+            curs.execute(
+                """SELECT urls.id, urls.name, url_checks.created_at
+                FROM urls
+                LEFT JOIN (
+                SELECT url_id, MAX(created_at) as created_at
+                FROM url_checks
+                GROUP BY url_id
+                ) url_checks ON urls.id = url_checks.url_id""")
             urls_base = curs.fetchall()
         curs.close()
         conn.close()
         return render_template('all_urls.html', urls=urls_base)
 
+"""SELECT urls.id, urls.name, url_checks.created_at
+FROM urls
+JOIN (
+  SELECT url_id, MAX(created_at) as created_at
+  FROM url_checks
+  GROUP BY url_id
+) url_checks ON urls.id = url_checks.url_id"""
+
+"""SELECT urls.id, urls.name, url_checks.created_at 
+            FROM urls
+            LEFT JOIN url_checks ON urls.id = url_checks.url_id"""
 
 @app.get('/urls/<id>')
 def url_page(id):
@@ -92,6 +111,27 @@ def url_page(id):
             """SELECT id, name, created_at
             FROM urls WHERE id=%s""", (id, ))
         url = curs.fetchone()
+    with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
+        curs.execute(
+            """SELECT id, created_at FROM url_checks 
+            WHERE url_id=%s""", (id, ))
+        check_info = curs.fetchall()
     curs.close()
     conn.close()
-    return render_template('single_url.html', messages=messages, url=url)
+    return render_template('single_url.html', check_info=check_info, messages=messages, url=url)
+
+
+@app.post('/urls/<id>/checks')
+def make_check(id):
+    DATABASE_URL = os.getenv('DATABASE_URL')
+    conn = psycopg2.connect(DATABASE_URL)
+    with conn.cursor() as curs:
+        curs.execute(
+            """INSERT INTO url_checks (url_id, created_at)
+            VALUES (%s, %s)""", (id, date.today()))
+        conn.commit()
+    curs.close()
+    conn.close()
+    flash('Страница успешно проверена', 'success')
+    return redirect(url_for('url_page', id=id), code=302)
+            

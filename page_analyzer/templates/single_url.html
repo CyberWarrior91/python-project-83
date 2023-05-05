@@ -57,14 +57,14 @@
         </tbody>
       </table>
     </div>
-      
-
+    {% endif %}
+    
       <h2 class="mt-5 mb-3">Проверки</h2>
       <form method="post" action="/urls/{{ url.id }}/checks">
       <input type="submit" class="btn btn-primary" value="Запустить проверку">
-      </form>
-            
+      </form>   
       <div>
+        
         <table class="table table-bordered table-hover mt-2" data-test="checks">
         <thead>
           <tr>
@@ -76,12 +76,24 @@
             <th>Дата создания</th>
           </tr>
         </thead>
-          <tbody>
-        
+        {% if check_info %}
+          {% for check in check_info[::-1] %}
+            <tbody>
+              <tr>
+                  <td>{{ check.id }}</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>{{ check.created_at }}</td>
+            </tr>
         </tbody>
+          {% endfor %}
+        {% endif %}
         </table>
+        
       </div>
-      {% endif %}
+      
 
     </main>
     <footer class="border-top py-3 mt-5 flex-shrink-0">
