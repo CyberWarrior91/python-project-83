@@ -44,10 +44,17 @@
                             <tbody>
                                 <tr>
                                     <td>{{ url.id }}</td>
-                                    <td>
-                                        <a href= "/urls/{{ url.id }}">{{ url.name }}</td>
+                                    <td><a href= "/urls/{{ url.id }}">{{ url.name }}</td>
+                                    {% if url.created_at %}
                                     <td>{{ url.created_at }}</td>
-                                    <td></td>  
+                                    {% else %}
+                                    <td></td>
+                                    {% endif %}
+                                    {% if url.status_code %}
+                                    <td>{{ url.status_code }}</td>
+                                    {% else %}
+                                    <td></td>
+                                    {% endif %}
                                 </tr>
                             </tbody>
                         {% endfor %}

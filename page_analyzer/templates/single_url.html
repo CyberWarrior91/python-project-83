@@ -30,6 +30,10 @@
           <div class="alert alert-info" role="alert"> {{ message }}
           </div>
           {% endif %}
+          {% if category == 'failed' %}
+          <div class="alert alert-danger" role="alert"> {{ message }}
+          </div>
+          {% endif %}
         {% endfor %}
       {% endif %}
 
@@ -81,7 +85,9 @@
             <tbody>
               <tr>
                   <td>{{ check.id }}</td>
-                  <td></td>
+                  {% if check.status_code %}
+                  <td>{{ check.status_code }}</td>
+                  {% endif %}
                   <td></td>
                   <td></td>
                   <td></td>

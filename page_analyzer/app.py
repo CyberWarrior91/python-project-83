@@ -13,6 +13,7 @@ import psycopg2.extras
 import validators
 from datetime import date
 from urllib.parse import urlparse
+import requests
 
 
 app = Flask(__name__)
@@ -76,12 +77,13 @@ def handle_urls():
     if request.method == 'GET':
         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
             curs.execute(
-                """SELECT urls.id, urls.name, url_checks.created_at
+                """SELECT urls.id, urls.name, 
+                url_checks.created_at, url_checks.status_code
                 FROM urls
                 LEFT JOIN (
-                SELECT url_id, MAX(created_at) as created_at
+                SELECT url_id, MAX(created_at) as created_at, url_checks.status_code
                 FROM url_checks
-                GROUP BY url_id
+                GROUP BY url_id, url_checks.status_code
                 ) url_checks ON urls.id = url_checks.url_id""")
             urls_base = curs.fetchall()
         curs.close()
@@ -101,7 +103,7 @@ def url_page(id):
         url = curs.fetchone()
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
         curs.execute(
-            """SELECT id, created_at FROM url_checks
+            """SELECT id, status_code, created_at FROM url_checks
             WHERE url_id=%s""", (id, ))
         check_info = curs.fetchall()
     curs.close()
@@ -117,8 +119,19 @@ def make_check(id):
     conn = psycopg2.connect(DATABASE_URL)
     with conn.cursor() as curs:
         curs.execute(
-            """INSERT INTO url_checks (url_id, created_at)
-            VALUES (%s, %s)""", (id, date.today()))
+            """SELECT name
+            FROM urls WHERE id=%s""", (id, ))
+        website = curs.fetchone()[0]
+        try:
+            request = requests.get(website)
+            status_code = request.status_code
+        except Exception:
+            flash('Произошла ошибка при проверке', 'failed')
+            return redirect(url_for('url_page', id=id), code=302)
+    with conn.cursor() as curs:
+        curs.execute(
+            """INSERT INTO url_checks (url_id, status_code, created_at)
+            VALUES (%s, %s, %s)""", (id, status_code, date.today()))
         conn.commit()
     curs.close()
     conn.close()
