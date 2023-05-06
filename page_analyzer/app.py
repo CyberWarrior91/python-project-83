@@ -77,11 +77,12 @@ def handle_urls():
     if request.method == 'GET':
         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
             curs.execute(
-                """SELECT urls.id, urls.name, 
+                """SELECT urls.id, urls.name,
                 url_checks.created_at, url_checks.status_code
                 FROM urls
                 LEFT JOIN (
-                SELECT url_id, MAX(created_at) as created_at, url_checks.status_code
+                SELECT url_id, MAX(created_at) as created_at,
+                url_checks.status_code
                 FROM url_checks
                 GROUP BY url_id, url_checks.status_code
                 ) url_checks ON urls.id = url_checks.url_id""")
