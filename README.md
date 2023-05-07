@@ -53,5 +53,3 @@ After successful installation, you need to initiate new poetry package using thi
 ```make dev``` starts the app on the local server in the development environment
 
 ```make start``` start the app in the production environment
-
-
