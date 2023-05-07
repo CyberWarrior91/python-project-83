@@ -14,6 +14,7 @@ import validators
 from datetime import date
 from urllib.parse import urlparse
 import requests
+from bs4 import BeautifulSoup
 
 
 app = Flask(__name__)
@@ -25,15 +26,6 @@ app.secret_key = os.getenv('SECRET_KEY')
 def main():
     messages = get_flashed_messages(with_categories=True)
     return render_template('main.html', messages=messages)
-
-
-def validation(url):
-    errors = {}
-    if url == '':
-        errors['blank_url'] = 'URL обязателен'
-    if not validators.url(url):
-        errors['wrong_url'] = 'Некорректный URL'
-    return errors
 
 
 @app.route('/urls', methods=['GET', 'POST'])
@@ -104,7 +96,9 @@ def url_page(id):
         url = curs.fetchone()
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
         curs.execute(
-            """SELECT id, status_code, created_at FROM url_checks
+            """SELECT
+            id, status_code, h1, title, description, created_at
+            FROM url_checks
             WHERE url_id=%s""", (id, ))
         check_info = curs.fetchall()
     curs.close()
@@ -125,14 +119,21 @@ def make_check(id):
         website = curs.fetchone()[0]
         try:
             request = requests.get(website)
-            status_code = request.status_code
         except Exception:
             flash('Произошла ошибка при проверке', 'failed')
             return redirect(url_for('url_page', id=id), code=302)
     with conn.cursor() as curs:
+        status_code = request.status_code
+        soup = BeautifulSoup(request.text, 'html.parser')
+        title = soup.title.string
+        h1 = soup.h1.string if soup.find('h1') else ''
+        meta = soup.find(attrs={'name': 'description'})
+        description = meta.get('content') if meta else ''
         curs.execute(
-            """INSERT INTO url_checks (url_id, status_code, created_at)
-            VALUES (%s, %s, %s)""", (id, status_code, date.today()))
+            """INSERT INTO url_checks
+            (url_id, status_code, h1, title, description, created_at)
+            VALUES (%s, %s, %s, %s, %s, %s)""",
+            (id, status_code, h1, title, description, date.today()))
         conn.commit()
     curs.close()
     conn.close()
