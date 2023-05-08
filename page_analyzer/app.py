@@ -37,7 +37,8 @@ def handle_urls():
         if new_url == '':
             flash('Некорректный URL')
             flash('URL обязателен')
-            return redirect(url_for('main'), code=302)
+            messages = get_flashed_messages(with_categories=True)
+            return render_template('main.html',  messages=messages), 422
         if validators.url(new_url):
             url_scheme = urlparse(new_url).scheme
             url_netloc = urlparse(new_url).netloc
@@ -65,7 +66,10 @@ def handle_urls():
             return redirect(url_for('url_page', id=url_id), code=302)
         else:
             flash('Некорректный URL')
-            return redirect(url_for('main'), code=302)
+            value = new_url
+            messages = get_flashed_messages(with_categories=True)
+            return render_template('main.html', value=value, messages=messages), 422
+            
     if request.method == 'GET':
         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
             curs.execute(

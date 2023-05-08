@@ -2,24 +2,13 @@ dev:
 	poetry run flask --app page_analyzer:app run
 install:
 		poetry install
-package-install:
-		pip install --user dist/*.whl --force-reinstall
 lint:
 		poetry run flake8 page_analyzer
-test:
-		poetry run pytest
-test-coverage:
-		poetry run pytest --cov=app --cov-report xml tests
 selfcheck:
 		poetry check
 
-check:		selfcheck test lint
-
-build:
-		poetry build
-
 publish:
-	        poetry publish --dry-run
+	    poetry publish --dry-run
 
 PORT ?= 8000
 start:
