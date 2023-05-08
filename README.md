@@ -28,6 +28,8 @@ You can see how it works by clicking on this <a href="https://python-project-83-
 * requests = ^2.30.0
 * bs4 = ^0.0.1
 
+In addition, you need to have your *DATABASE_URL* and *SECRET_KEY* environment variables specified for both development and production environment in order to this application to start
+
 ## Makefile
 
 In order to use commands from Makefile, you need to have **poetry** installed
