@@ -127,7 +127,9 @@ def make_check(id):
             request = requests.get(website)
         except Exception:
             flash('Произошла ошибка при проверке', 'failed')
-            return redirect(url_for('url_page', id=id), code=302)
+            messages = get_flashed_messages(with_categories=True)
+            return render_template(
+                'single_url.html', messages=messages)
     with conn.cursor() as curs:
         status_code = request.status_code
         soup = BeautifulSoup(request.text, 'html.parser')
