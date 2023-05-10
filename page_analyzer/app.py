@@ -129,7 +129,7 @@ def make_check(id):
             flash('Произошла ошибка при проверке', 'failed')
             messages = get_flashed_messages(with_categories=True)
             return render_template(
-                'single_url.html', messages=messages)
+                'single_url.html', messages=messages), 422
     with conn.cursor() as curs:
         status_code = request.status_code
         soup = BeautifulSoup(request.text, 'html.parser')
