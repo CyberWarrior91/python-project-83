@@ -3,6 +3,7 @@ from flask import (
     render_template,
     request,
     redirect,
+    response,
     url_for,
     get_flashed_messages,
     flash)
@@ -125,8 +126,9 @@ def make_check(id):
         website = curs.fetchone()[0]
         try:
             request = requests.get(website)
+            response.raise_for_status()
         except Exception:
-            flash('Произошла ошибка при проверке', 'failed')
+            flash('Произошла ошибка при проверке', 'danger')
             messages = get_flashed_messages(with_categories=True)
             return render_template(
                 'single_url.html', messages=messages), 422
