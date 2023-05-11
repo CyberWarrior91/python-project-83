@@ -3,7 +3,6 @@ from flask import (
     render_template,
     request,
     redirect,
-    make_response,
     url_for,
     get_flashed_messages,
     flash)
@@ -125,8 +124,7 @@ def make_check(id):
             FROM urls WHERE id=%s""", (id, ))
         website = curs.fetchone()[0]
         try:
-            request = requests.get(website)
-            response = make_response(redirect(url_for('url_page', id=id), code=302))
+            response = requests.get(website)
             response.raise_for_status()
         except Exception:
             flash('Произошла ошибка при проверке', 'danger')
@@ -147,4 +145,4 @@ def make_check(id):
     curs.close()
     conn.close()
     flash('Страница успешно проверена', 'success')
-    return response
+    return redirect(url_for('url_page', id=id), code=302)
