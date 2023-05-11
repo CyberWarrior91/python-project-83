@@ -130,8 +130,8 @@ def make_check(id):
             flash('Произошла ошибка при проверке', 'danger')
             return redirect(url_for('url_page', id=id), code=302)
     with conn.cursor() as curs:
-        status_code = request.status_code
-        soup = BeautifulSoup(request.text, 'html.parser')
+        status_code = response.status_code
+        soup = BeautifulSoup(response.text, 'html.parser')
         title = soup.title.string
         h1 = soup.h1.string if soup.find('h1') else ''
         meta = soup.find(attrs={'name': 'description'})
