@@ -1,7 +1,6 @@
+.pytest_cache
 .env
-page_analyzer/templates/*.html
 page_analyzer/templates/css/*.css
-.pytest_cache/
 __pycache__
-.pyc
-*.idea
+*.pyc
+.idea
