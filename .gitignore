@@ -1,7 +1,7 @@
 .env
-page_analyzer/templates/css/main.css
+page_analyzer/templates/*.html
+page_analyzer/templates/css/*.css
 .pytest_cache/
 __pycache__
-all_urls.html
 .pyc
 *.idea
