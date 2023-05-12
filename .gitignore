@@ -1,6 +1,6 @@
 .env
 page_analyzer/templates/css/main.css
 .pytest_cache/
-page_analyzer/__pycache__/
+page_analyzer/__pycache__
 *.pyc
 *.idea
