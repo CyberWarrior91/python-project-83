@@ -94,7 +94,9 @@ def url_page(id):
 
 
 def make_request(url):
-    return requests.get(url)
+    response = requests.get(url)
+    response.raise_for_status()
+    return response
 
 
 @app.post('/urls/<id>/checks')
@@ -102,7 +104,6 @@ def make_check(id):
     website = select(['name'], 'urls', 'id', id)[0]
     try:
         response = make_request(website)
-        response.raise_for_status()
     except Exception:
         flash('Произошла ошибка при проверке', 'danger')
         return redirect(url_for('url_page', id=id), code=302)
