@@ -6,11 +6,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
-conn = psycopg2.connect(DATABASE_URL)
 
 
 def select(data: list, table, attr, value, fetch='One'):
-    DATABASE_URL = os.getenv('DATABASE_URL')
     conn = psycopg2.connect(DATABASE_URL)
     data_string = (', ').join(data)
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
@@ -26,7 +24,6 @@ def select_complex(
         data: list = [], sub_data: list = [], group_by: list = [],
         table_1: str = '', table_2: str = '', equality: str = '',
         join_type='INNER JOIN'):
-    DATABASE_URL = os.getenv('DATABASE_URL')
     conn = psycopg2.connect(DATABASE_URL)
     data_str = (', ').join(data)
     sub_data_str = (', ').join(sub_data)
@@ -44,7 +41,6 @@ def select_complex(
 
 
 def insert(table, attrs: list, values: list):
-    DATABASE_URL = os.getenv('DATABASE_URL')
     conn = psycopg2.connect(DATABASE_URL)
     attrs_str = (', ').join(attrs)
     pseudo_values = values[:]
