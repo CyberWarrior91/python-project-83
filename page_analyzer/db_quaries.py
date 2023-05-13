@@ -9,7 +9,6 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 conn = psycopg2.connect(DATABASE_URL)
 
 
-
 def select(data: list, table, attr, value, fetch='One'):
     data_string = (', ').join(data)
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
