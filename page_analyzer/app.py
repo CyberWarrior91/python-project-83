@@ -10,10 +10,10 @@ from dotenv import load_dotenv
 import os
 from datetime import date
 import requests
-from page_analyzer.parse_url import parse_parameters
-from page_analyzer.normalize_url import normalize_url
-from page_analyzer.db_quaries import select, insert, select_complex
-from page_analyzer.validate_url import validate
+from page_analyzer.database.db_quaries import select, insert, select_complex
+from page_analyzer.url_handlers.parse_url import parse_parameters
+from page_analyzer.url_handlers.normalize_url import normalize_url
+from page_analyzer.url_handlers.validate_url import validate
 
 
 app = Flask(__name__)
