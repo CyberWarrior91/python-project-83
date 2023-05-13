@@ -7,4 +7,7 @@ def parse_parameters(url):
     h1 = soup.h1.string if soup.find('h1') else ''
     meta = soup.find(attrs={'name': 'description'})
     description = meta.get('content') if meta else ''
+    if len(description) >= 255:
+        new_description = description[:255]
+        return title, h1, new_description
     return title, h1, description

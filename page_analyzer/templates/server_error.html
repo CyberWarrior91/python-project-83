@@ -1,0 +1,23 @@
+{% include 'header.html' %}
+<style>
+    .modal-window {
+        position: fixed;
+        top: 30%;
+        left: 15%;
+
+        width: auto;
+        height: auto;
+    }
+    .font-sz {
+        font-size: 80px;
+    }
+</style>
+
+    <main class="flex-grow-1">
+        <div class="container-lg mt-3 text-center h-100 align-middle py-5 modal-window">
+          <h1 class="font-sz"><b>Ошибка на сервере</b></h1>
+          <h2>Упс! Сервер не отвечает. Попробуйте зайти на эту страницу позднее.</h2>
+        </div>
+    </main>
+</body>
+{% include 'footer.html' %}
