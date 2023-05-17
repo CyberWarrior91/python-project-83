@@ -1,4 +1,5 @@
 import validators
+"""Validate the correction of URL name"""
 
 
 def validate(url):
@@ -7,4 +8,6 @@ def validate(url):
         errors['wrong'] = 'Некорректный URL'
     if url == '':
         errors['blank'] = 'URL обязателен'
+    if len(url) > 255:
+        errors['too_long'] = 'URL превышает 255 символов'
     return errors

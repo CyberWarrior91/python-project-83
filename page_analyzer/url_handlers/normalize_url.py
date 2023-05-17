@@ -1,4 +1,5 @@
 from urllib.parse import urlparse
+"""Transform the complex URL address to basic scheme+netlock"""
 
 
 def normalize_url(url):
