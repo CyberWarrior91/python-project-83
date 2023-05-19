@@ -11,6 +11,7 @@ import os
 from datetime import date
 import requests
 from page_analyzer.database.db_queries import (
+    check_url_in_table,
     select_from_urls,
     select_complex,
     select_from_url_checks,
@@ -50,29 +51,18 @@ def handle_urls():
         errors = validate(new_url)
         if not errors:
             curr_url = normalize_url(new_url)
-            try:
+            if check_url_in_table(curr_url):
                 url_id = select_from_urls(curr_url)['id']
                 flash('Страница уже существует', 'repeat')
                 return redirect(url_for('url_page', id=url_id), code=302)
-            except Exception:
-                creation_date = date.today().__str__()
-                insert_to_urls([curr_url, creation_date])
+            creation_date = date.today().__str__()
+            insert_to_urls([curr_url, creation_date])
             url_id = select_from_urls(curr_url)['id']
             flash('Страница успешно добавлена', 'success')
             return redirect(url_for('url_page', id=url_id), code=302)
-        if 'wrong' and 'blank' in errors.keys():
-            flash(errors['wrong'])
-            flash(errors['blank'])
-            messages = get_flashed_messages(with_categories=True)
-            return render_template(
-                'main.html', messages=messages), 422
-        if 'too_long' in errors.keys():
-            flash(errors['too_long'])
-            messages = get_flashed_messages(with_categories=True)
-            return render_template(
-                'main.html', messages=messages), 422
         else:
-            flash(errors['wrong'])
+            for value in errors.values():
+                flash(value)
             value = new_url
             messages = get_flashed_messages(with_categories=True)
             return render_template(

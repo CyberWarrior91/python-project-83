@@ -9,6 +9,16 @@ load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 
+def check_url_in_table(url):
+    """Check whether the URL is already in database or not"""
+    conn = psycopg2.connect(DATABASE_URL)
+    with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
+        curs.execute(f"""SELECT * FROM urls WHERE name=%s""", (url, ))
+        url_record = curs.fetchone()
+    if url_record:
+        return True
+
+
 def select_from_urls(value):
     conn = psycopg2.connect(DATABASE_URL)
     attr = 'id' if value.isdigit() else 'name'
@@ -56,3 +66,6 @@ def insert_to_url_checks(values):
             description, status_code, created_at)
         VALUES (%s, %s, %s, %s, %s, %s)""", (values))
         conn.commit()
+
+
+
