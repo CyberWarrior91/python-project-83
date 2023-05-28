@@ -1,5 +1,8 @@
 dev:
 	poetry run flask --app page_analyzer:app run
+
+db:
+	psql postgresql://postgres:pN6QvvxmUuvnS4hpGEgZ@containers-us-west-198.railway.app:7780/railway < database.sql
 install:
 		poetry install
 lint:
@@ -12,4 +15,5 @@ publish:
 
 PORT ?= 8000
 start:
-	poetry run gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
+		psql postgresql://postgres:pN6QvvxmUuvnS4hpGEgZ@containers-us-west-198.railway.app:7780/railway < database.sql
+		poetry run gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
