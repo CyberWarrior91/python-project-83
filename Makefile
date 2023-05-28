@@ -1,8 +1,5 @@
 dev:
 	poetry run flask --app page_analyzer:app run
-
-db:
-	psql postgresql://postgres:pN6QvvxmUuvnS4hpGEgZ@containers-us-west-198.railway.app:7780/railway < database.sql
 install:
 		poetry install
 lint:
