@@ -15,5 +15,5 @@ publish:
 
 PORT ?= 8000
 start:
-		psql postgresql://postgres:pN6QvvxmUuvnS4hpGEgZ@containers-us-west-198.railway.app:7780/railway < database.sql
+		psql $(RAILWAY_DATABASE_URL) < database.sql
 		poetry run gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
