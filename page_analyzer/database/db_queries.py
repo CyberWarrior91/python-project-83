@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 """Connect to database and return Python dictionary object"""
 
 load_dotenv()
+
 DATABASE_URL = os.getenv('DATABASE_URL')
 CONNECTION = psycopg2.connect(DATABASE_URL)
 
