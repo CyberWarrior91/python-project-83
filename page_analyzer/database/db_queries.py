@@ -13,7 +13,7 @@ CONNECTION = psycopg2.connect(DATABASE_URL)
 
 def check_url_in_table(url):
     """Check whether the URL is already in database or not"""
-    conn = CONNECTION
+    conn = psycopg2.connect(DATABASE_URL)
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
         curs.execute("""SELECT * FROM urls WHERE name=%s""", (url, ))
         url_record = curs.fetchone()
