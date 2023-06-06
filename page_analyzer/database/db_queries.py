@@ -10,6 +10,7 @@ load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 CONNECTION = psycopg2.connect(DATABASE_URL)
 
+
 def check_url_in_table(url):
     """Check whether the URL is already in database or not"""
     conn = CONNECTION
